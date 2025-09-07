@@ -53,11 +53,11 @@
     .sig-box{flex:1; min-height:70px; border-radius:8px; border:1px dashed #ffd6e6; background:white; display:flex; align-items:center; justify-content:center; position:relative}
     .sig-buttons{display:flex; gap:8px}
     .sig-box[contenteditable="true"] {
-  cursor: text;
-  text-align: center;
-  font-family: 'Segoe UI', Roboto, Arial, sans-serif;
-  font-size: 15px;
-}
+      cursor: text;
+      text-align: center;
+      font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+      font-size: 15px;
+    }
 
     .preview{border-top:1px dashed #ffe7ef; margin-top:14px; padding-top:12px}
     .preview .line{display:flex; justify-content:space-between; gap:8px}
@@ -98,73 +98,77 @@
       .sig-row {flex-direction: column; gap: 8px;}
       .sig-box {min-height: 70px; min-width: 252px;}
     }
-    /* Ẩn các nút khi xuất PDF */
-@media print {
-  .add-btn { display: none !important; }
-}
-.dialog-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.5);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  animation: fadeOut 0.2s forwards;
-}
 
-.dialog-box {
-  background: white;
-  padding: 20px;
-  border-radius: 14px;
-  /* width: 100%; */
-  text-align: center;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.2);
-  transform: scale(0.8);
-  opacity: 0;
-  animation: zoomOut 0.2s forwards;
-}
+    /* Ẩn các nút khi xuất PDF và giữ bố cục 2 cột */
+    @media print {
+      .add-btn { display: none !important; }
+      .two-col { grid-template-columns: 1fr 1fr !important; gap: 14px !important; }
+      body { padding: 0 !important; }
+      .wrap { max-width: 100% !important; }
+      .sig-row { flex-direction: row !important; }
+    }
 
-.dialog-overlay.show {
-  display: flex;
-  animation: fadeIn 0.3s forwards;
-}
+    .dialog-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      animation: fadeOut 0.2s forwards;
+    }
 
-.dialog-overlay.show .dialog-box {
-  animation: zoomIn 0.3s forwards;
-}
+    .dialog-box {
+      background: white;
+      padding: 20px;
+      border-radius: 14px;
+      text-align: center;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+      transform: scale(0.8);
+      opacity: 0;
+      animation: zoomOut 0.2s forwards;
+    }
 
-.dialog-actions {
-  margin-top: 14px;
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-}
+    .dialog-overlay.show {
+      display: flex;
+      animation: fadeIn 0.3s forwards;
+    }
 
-.dialog-msg {
-  font-size: 13px;
-  color: #666;
-  margin: 6px 0 0;
-}
+    .dialog-overlay.show .dialog-box {
+      animation: zoomIn 0.3s forwards;
+    }
 
-/* Hiệu ứng keyframes */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-@keyframes fadeOut {
-  from { opacity: 1; }
-  to { opacity: 0; }
-}
-@keyframes zoomIn {
-  from { transform: scale(0.8); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
-@keyframes zoomOut {
-  from { transform: scale(1); opacity: 1; }
-  to { transform: scale(0.8); opacity: 0; }
-}
+    .dialog-actions {
+      margin-top: 14px;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
 
+    .dialog-msg {
+      font-size: 13px;
+      color: #666;
+      margin: 6px 0 0;
+    }
+
+    /* Hiệu ứng keyframes */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+    @keyframes zoomIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    @keyframes zoomOut {
+      from { transform: scale(1); opacity: 1; }
+      to { transform: scale(0.8); opacity: 0; }
+    }
   </style>
 </head>
 <body>
@@ -173,7 +177,7 @@
       <div class="controls">
         <button class="btn btn-primary" id="savePdfBtn">Đồng Ý</button>
       </div>
-              <p class="note" style="text-align: center;">Lưu ý: cần điền đầy đủ và đọc hết các điều khoản trước khi đồng ý.</p>
+      <p class="note" style="text-align: center;">Lưu ý: cần điền đầy đủ và đọc hết các điều khoản trước khi đồng ý.</p>
       <section class="paper" id="exportContent">
         <div class="center">
           <div class="seal">CỘNG HÒA TÌNH YÊU VĨNH CỬU</div>
@@ -255,14 +259,14 @@
           <div class="preview">
             <h3 class="center">ĐẠI DIỆN CÁC BÊN CAM KẾT</h3>
             <div class="sig-row">
-            <div style="flex:1">
-                <label style="text-align: center;">Bên A </label>
-                <div class="sig-box" id="sigA" contenteditable="true"></div>
-            </div>
-            <div style="flex:1">
-                <label style="text-align: center;">Bên B </label>
-                <div class="sig-box" id="sigB" contenteditable="true"> Tú </div>
-            </div>
+              <div style="flex:1">
+                  <label style="text-align: center;">Bên A </label>
+                  <div class="sig-box" id="sigA" contenteditable="true"></div>
+              </div>
+              <div style="flex:1">
+                  <label style="text-align: center;">Bên B </label>
+                  <div class="sig-box" id="sigB" contenteditable="true"> Tú </div>
+              </div>
             </div>
             <br>
           </div>
@@ -351,19 +355,16 @@ confirmYes.addEventListener('click', ()=>{
   addBtns.forEach(btn => btn.style.display = 'none');
 
   html2pdf().set({
-    margin: 10, // lề 10mm
+    margin: 10,
     filename: 'BanCamKetTinhYeu.pdf',
     image: { type: 'jpeg', quality: 1 },
-    html2canvas: { scale: 2, useCORS: true },
+    html2canvas: { scale: 3, useCORS: true },
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-    pagebreak: { mode: ['avoid', 'css', 'legacy'] }
+    pagebreak: { mode: ['avoid'] }
   }).from(element).save().then(()=>{
     addBtns.forEach(btn => btn.style.display = '');
   });
 });
-
-</script>
-
-
+  </script>
 </body>
 </html>
