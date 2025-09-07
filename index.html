@@ -117,8 +117,7 @@
   background: white;
   padding: 20px;
   border-radius: 14px;
-  max-width: 320px;
-  width: 90%;
+  /* width: 100%; */
   text-align: center;
   box-shadow: 0 6px 18px rgba(0,0,0,0.2);
   transform: scale(0.8);
@@ -228,12 +227,29 @@
             </div>
 
             <div class="clause">
-              <strong>Điều 4. Thời hạn cam kết</strong> <button class="add-btn" onclick="addItem(this)">+</button>
+              <strong>Điều 4. Giải quyết mâu thuẫn</strong> <button class="add-btn" onclick="addItem(this)">+</button>
+              <ul>
+                <li>Nếu cãi nhau, người sai phải xin lỗi trước (nếu không biết ai sai thì cả hai cùng xin lỗi).</li>
+                <li>Bất kỳ mâu thuẫn nào cũng phải kết thúc bằng một nụ hôn.</li>
+              </ul>
+            </div>
+
+            <div class="clause">
+              <strong>Điều 5. Điều khoản bất ngờ</strong> <button class="add-btn" onclick="addItem(this)">+</button>
+              <ul>
+                <li>Bất kỳ lúc nào cũng có thể ôm/làm nũng mà không cần lý do.</li>
+                <li>Phải chấp nhận những trò bất ngờ hoặc prank dễ thương của đối phương.</li>
+              </ul>
+            </div> 
+
+            <div class="clause">
+              <strong>Điều 6. Thời hạn cam kết</strong> <button class="add-btn" onclick="addItem(this)">+</button>
               <ul>
                 <li>Hiệu lực: Kể từ ngày ký.</li>
                 <li>Thời gian: Mãi mãi và không bao giờ hết hạn.</li>
               </ul>
             </div>
+
           </div>
 
           <div class="preview">
@@ -245,7 +261,7 @@
             </div>
             <div style="flex:1">
                 <label style="text-align: center;">Bên B </label>
-                <div class="sig-box" id="sigB" contenteditable="true"> Tú <br> Lê Văn Tú</div>
+                <div class="sig-box" id="sigB" contenteditable="true"> Tú </div>
             </div>
             </div>
             <br>
@@ -255,21 +271,21 @@
     </div>
     <div id="confirmDialog" class="dialog-overlay">
         <div class="dialog-box">
-            <h3>Bạn có chắc muốn xuất PDF?</h3>
-            <p class="dialog-msg">Bản cam kết sẽ được lưu vào máy.</p>
+            <h3>Em đã chắc chắn là đã đọc kỹ rồi chứ ?</h3>
+            <p class="dialog-msg">Đã ký bản cam kết này rồi là phải thực hiện theo đấy nhé !!!</p>
             <div class="dialog-actions">
-            <button id="confirmYes" class="btn btn-primary">Xuất PDF</button>
-            <button id="confirmNo" class="btn btn-ghost">Hủy</button>
+            <button id="confirmYes" class="btn btn-primary">Chắc Chắn</button>
+            <button id="confirmNo" class="btn btn-ghost">Không</button>
             </div>
+            <p class="note" style="text-align: center;">Lưu xong gửi cho a xem với nhá !!</p>
         </div>
     </div>
   </div>
 
   <!-- Thư viện html2pdf -->
-<!-- Thư viện html2canvas -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
-<script>
+  <script>
 const nameA = document.getElementById('nameA');
 const nickA = document.getElementById('nickA');
 const nameB = document.getElementById('nameB');
@@ -302,40 +318,7 @@ function addItem(button){
   li.focus();
 }
 
-// Hàm thay input -> span khi xuất ảnh
-function replaceInputs(container) {
-  const inputs = container.querySelectorAll('input, textarea');
-  const clones = [];
-  inputs.forEach(input => {
-    const span = document.createElement("span");
-    span.textContent = input.value || input.placeholder;
-    span.style.cssText = `
-      display: inline-block;
-      padding: 6px 10px;
-      border-radius: 8px;
-      border: 1px dashed #ffe1ec;
-      background: transparent;
-      min-width: 200px;
-      font-size: 14px;
-      color: #222;
-      white-space: pre-wrap;
-    `;
-    input.style.display = "none";
-    input.parentNode.insertBefore(span, input);
-    clones.push({input, span});
-  });
-  return clones;
-}
-
-// Khôi phục lại input sau khi chụp xong
-function restoreInputs(clones) {
-  clones.forEach(({input, span}) => {
-    span.remove();
-    input.style.display = "";
-  });
-}
-
-// Lưu JPG
+// Lưu PDF
 const confirmDialog = document.getElementById('confirmDialog');
 const confirmYes = document.getElementById('confirmYes');
 const confirmNo = document.getElementById('confirmNo');
@@ -359,7 +342,7 @@ confirmNo.addEventListener('click', ()=>{
   confirmDialog.classList.remove('show');
 });
 
-// Xác nhận xuất JPG
+// Xác nhận xuất PDF
 confirmYes.addEventListener('click', ()=>{
   confirmDialog.classList.remove('show');
 
@@ -367,31 +350,19 @@ confirmYes.addEventListener('click', ()=>{
   const addBtns = element.querySelectorAll('.add-btn');
   addBtns.forEach(btn => btn.style.display = 'none');
 
-  // Thay input -> span để render đẹp
-  const clones = replaceInputs(element);
-
-  html2canvas(element, {
-    scale: 3,
-    useCORS: true,
-    backgroundColor: "#ffffff"
-  }).then(canvas => {
-    // Chuyển canvas -> blob thay vì dataURL
-    canvas.toBlob(function(blob) {
-      const link = document.createElement('a');
-      link.download = 'BanCamKetTinhYeu.jpg';
-      link.href = URL.createObjectURL(blob);
-      link.click();
-      URL.revokeObjectURL(link.href); // giải phóng bộ nhớ
-    }, "image/jpeg", 1.0);
-
-    // Khôi phục lại input
-    restoreInputs(clones);
+  html2pdf().set({
+    margin: 10, // lề 10mm
+    filename: 'BanCamKetTinhYeu.pdf',
+    image: { type: 'jpeg', quality: 1 },
+    html2canvas: { scale: 2, useCORS: true },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    pagebreak: { mode: ['avoid', 'css', 'legacy'] }
+  }).from(element).save().then(()=>{
     addBtns.forEach(btn => btn.style.display = '');
   });
 });
 
 </script>
-
 
 
 </body>
