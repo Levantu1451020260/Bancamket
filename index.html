@@ -393,15 +393,18 @@ confirmYes.addEventListener('click', ()=>{
     image: { type: 'jpeg', quality: 1 },
     html2canvas: { scale: 2, useCORS: true },
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-    pagebreak: { mode: [ 'css', 'legacy'] }
+    pagebreak: { mode: ['css', 'legacy'] }
   }).from(element).toPdf().get('pdf').then(function (pdf) {
-    // Trên iOS: mở PDF trong tab mới
-    if(navigator.userAgent.match(/iPhone|iPad|iPod/i)) {
-      const blob = pdf.output('bloburl');
-      window.open(blob, '_blank');
+    const blob = pdf.output('blob');
+
+    // Kiểm tra iOS
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    if(isIOS){
+      const blobUrl = URL.createObjectURL(blob);
+      window.open(blobUrl, '_blank'); // mở PDF trong tab mới
+      alert("Trên iOS, nhấn nút Share → Save to Files để lưu PDF về máy.");
     } else {
-      // Desktop/Android: tải trực tiếp
-      pdf.save('BanCamKetTinhYeu.pdf');
+      pdf.save('BanCamKetTinhYeu.pdf'); // desktop/Android tải trực tiếp
     }
   }).finally(()=>{
     addBtns.forEach(btn => btn.style.display = '');
