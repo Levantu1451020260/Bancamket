@@ -44,7 +44,7 @@
 
     label{display:block; font-size:18px; color:var(--muted);
     font-weight: 500;}
-    input[type=text], textarea, .small-input{ padding:10px; border-radius:8px; border:1px dashed #ffe1ec; background:transparent}
+    input[type=text], textarea, .small-input{ padding:10px; border-radius:8px; border:1px dashed pink; background:transparent; width: 75%;}
     textarea{min-height:80px}
 
     .two-col{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:8px}
@@ -95,18 +95,36 @@
       header {flex-direction: column; gap: 8px; align-items: flex-start;}
       .logo {width: 56px; height: 56px; font-size: 16px;}
       .paper {padding: 10px;}
-      .sig-row {flex-direction: column; gap: 8px;}
-      .sig-box {min-height: 70px; min-width: 252px;}
+      /* .sig-row {flex-direction: column; gap: 8px;} */
+      .sig-box {min-height: 70px;}
     }
 
-    /* Ẩn các nút khi xuất PDF và giữ bố cục 2 cột */
-    @media print {
-      .add-btn { display: none !important; }
-      .two-col { grid-template-columns: 1fr 1fr !important; gap: 14px !important; }
-      body { padding: 0 !important; }
-      .wrap { max-width: 100% !important; }
-      .sig-row { flex-direction: row !important; }
-    }
+.two-col {
+  display: flex;
+  gap: 14px;
+  margin-top: 8px;
+  flex-wrap: nowrap; /* buộc nằm cùng 1 hàng */
+}
+
+.two-col > div {
+  flex: 1;       /* chia đều */
+  min-width: 0;  /* tránh tràn nội dung */
+}
+
+/* Khi in PDF */
+@media print {
+  .two-col {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 14px !important;
+  }
+  .two-col > div {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+
 
     .dialog-overlay {
       position: fixed;
@@ -151,6 +169,21 @@
       color: #666;
       margin: 6px 0 0;
     }
+/* Không cho ngắt trang giữa các clause */
+/* Không để khối wrap bị cắt trang */
+.wrap, .clause, .two-col {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+/* Giảm margin/padding trên khi in PDF */
+@media print {
+  .wrap {
+    padding-top: 10px !important;
+    margin-top: 0 !important;
+  }
+}
+
 
     /* Hiệu ứng keyframes */
     @keyframes fadeIn {
@@ -190,12 +223,12 @@
 
           <div class="two-col">
             <div>
-              <h3>Bên A (Người đáng yêu số 1)</h3>
+              <h3>Bên A (Nóc Nhà)</h3>
               <label>Họ và tên: <input type="text" id="nameA" value="Lý Thùy An" readonly /></label>
               <label>Biệt danh: <input type="text" id="nickA" value="Bé Iu 🥰" readonly /></label>
             </div>
             <div>
-              <h3>Bên B (Người đáng yêu số 2)</h3>
+              <h3>Bên B (Cột nhà)</h3>
               <label>Họ và tên: <input type="text" id="nameB" value="Lê Văn Tú" readonly /></label>
               <label>Biệt danh: <input type="text" id="nickB" placeholder="Cần bé đặt cho" /></label>
             </div>
@@ -360,7 +393,7 @@ confirmYes.addEventListener('click', ()=>{
     image: { type: 'jpeg', quality: 1 },
     html2canvas: { scale: 3, useCORS: true },
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-    pagebreak: { mode: ['avoid'] }
+    pagebreak: { mode: [ 'css', 'legacy'] }
   }).from(element).save().then(()=>{
     addBtns.forEach(btn => btn.style.display = '');
   });
